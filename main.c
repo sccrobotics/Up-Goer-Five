@@ -6,7 +6,7 @@ int linefollow()
 
 int getring()
 {
-  motor[motorA] = -30;
+  	motor[motorA] = -30;
 	wait10Msec(100);
 	motor[motorA] = 0;
 	return 0;
