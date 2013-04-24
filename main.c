@@ -6,6 +6,10 @@
 
 #define THRESHOLD 50
 
+//distances in subroutines
+#define CAN_DIST 22.0
+#define RING_DIST 14.0
+
 /*****************************
 *********Subroutines**********
 *****************************/
@@ -14,6 +18,7 @@ int halt()
 {
 	motor[left] = 0;
 	motor[right] = 0;
+	motor[addon] = 0;
 	return 0;
 }
 
@@ -42,6 +47,22 @@ int deploy_fork()
 {
 	motor[addon] = 30;
 	wait10Msec(15);
+	motor[addon] = 0;
+	return 0;
+}
+
+int open_claw()
+{
+	motor[addon] = 100;
+	wait10Msec(100);
+	motor[addon] = 0;
+	return 0;
+}
+
+int close_claw()
+{
+	motor[addon] = -100;
+	wait10Msec(100);
 	motor[addon] = 0;
 	return 0;
 }
@@ -145,9 +166,9 @@ int linefollow()
 
 int ring()
 {
-	forward(1.166666666);
+	forward(RING_DIST/12.0);
 	getring();
-	backward(1.166666666);
+	backward(RING_DIST/12.0);
 	dropring();
 	return 1;
 }
@@ -166,25 +187,34 @@ int knock()
 
 int can()
 {
-	//TODO
+	waitpress();
+	close_claw();
+	forward(CAN_DIST/12.0);
+	open_claw();
+	backward(CAN_DIST/12.0);
 	return 1;
 }
-
 
 /*
 Plan of Attack
 --------------
-1. Follow the line
-2. Get ring
-3. Push blocks
-4. Knock over blocks
-5. Place can on target
+1. Place can on target	DONE
+2. Get ring							NEEDS TESTING
+3. Push blocks					TODO
+4. Knock over blocks		TODO
+5. Follow the line			DONE
 */
+
 
 task main()
 {
-	wait10Msec(200);
+	wait10Msec(50);
 	print("Ready 2 Roll");
+	waitpress();
+
+	//place can on target
+	print("Placing Can...");
+	can();
 	waitpress();
 
 	//get ring
@@ -200,11 +230,6 @@ task main()
 	//knock over blocks
 	print("Knocking Blocks...");
 	knock();
-	waitpress();
-
-	//place can on target
-	print("Placing Can...");
-	can();
 	waitpress();
 
 	//follow the line
