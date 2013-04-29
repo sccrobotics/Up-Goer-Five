@@ -114,7 +114,7 @@ int backward(float num)
 int waitpress()
 {
 	while(nNxtButtonPressed != 3) wait10Msec(1);
-	wait10Msec(100);
+	wait10Msec(20);
 	return 1;
 }
 
@@ -131,21 +131,6 @@ int print(char * text)
 
 int linefollow()
 {
-	bool go = true;
-
-	//move forwards until we get to the edge of the home box
-	motor[left] = 100;
-	motor[right] = 100;
-	while(!go)
-	{
-		go = true;
-		for(int n=0; n<100; n++)
-		{
-			wait10Msec(1);
-			if(!line()) go = false;
-		}
-	}
-
 	//now follow the line, keeping it to our left
 	while(nNxtButtonPressed != 3) //stop on press of orange button
 	{
